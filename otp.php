@@ -3,36 +3,26 @@ session_start();
 
 require_once '//Applications/XAMPP/xamppfiles/htdocs/PHPMailer/src/PHPMailer.php';
 
-// Check if the email or phone value is set in the session
 if (!isset($_SESSION['email']) && !isset($_SESSION['phone'])) {
-  // If the session variable for the email or phone is not set, redirect the user to the login page
   header("Location: login.php");
   exit();
 }
 
-// Check if the OTP has been submitted
 if (isset($_POST['otp'])) {
-  // Sanitize the OTP input
   $otp_input = mysqli_real_escape_string($conn, $_POST['otp']);
 
-  // Check if the input code matches the generated code
   if ($otp_input == $_SESSION['otp']) {
-    // OTP is correct, redirect to dashboard.php
     header("Location: dashboard.php");
     exit();
   } else {
-    // OTP is incorrect, display error message
     $error_message = "Please enter a valid OTP.";
   }
 }
 
-// Check if the OTP code has already been sent
 if (!isset($_SESSION['otp'])) {
-  // Generate a random 4-digit code
   $otp_code = rand(1000, 9999);
 
   if (isset($_SESSION['email'])) {
-    // Send the code to the email in the session
     $to = $_SESSION['email'];
     $subject = 'OTP Code';
     $message = 'Your OTP Code is: ' . $otp_code;
@@ -42,19 +32,15 @@ if (!isset($_SESSION['otp'])) {
     $input_type = 'email';
     $input_placeholder = 'example@example.com';
   } elseif (isset($_SESSION['phone'])) {
-    // Send the code to the phone number in the session (requires a third-party SMS API)
-    // ...
     $label_text = 'Phone Number:';
     $input_type = 'tel';
     $input_placeholder = '0123456789';
   }
 
   if ($sent) {
-    // OTP code sent successfully, store it in the session
     $_SESSION['otp'] = $otp_code;
     $info_message = "OTP code has been sent to your " . (isset($_SESSION['email']) ? "email" : "phone number") . ".";
   } else {
-    // OTP code not sent, display error message
     $error_message = "Failed to send OTP code. Please try again later.";
   }
 }

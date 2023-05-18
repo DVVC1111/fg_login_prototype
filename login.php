@@ -13,7 +13,7 @@ if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
-// Check if the email or phone number has been submitted
+
 // Check if the email or phone number has been submitted
 if (isset($_POST['login_type'])) {
     session_start();
@@ -39,16 +39,13 @@ if (isset($_POST['login_type'])) {
     $result = mysqli_query($conn, $sql);
   
     if (mysqli_num_rows($result) > 0) {
-      // Email or phone number exists, start session for value
       $_SESSION[$session_variable] = $login_value;
       header("Location: otp.php");
       exit();
     } else {
-      // Email or phone number does not exist, display error message
       $error_message = "The " . ($login_type == 'phone' ? "phone number" : "email") . " does not exist.";
     }
   }
-
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +78,7 @@ if (isset($_POST['login_type'])) {
   </div>
   
   <script>
-    // Toggle input type between email and phone number based on radio button selection
+   
     const emailRadio = document.getElementById('email-radio');
     const phoneRadio = document.getElementById('phone-radio');
     const loginValueInput = document.getElementById('login_value');
